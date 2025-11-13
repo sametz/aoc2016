@@ -21,6 +21,7 @@ def read_input():
 def follow_directions(steps):
     pos = 0 + 0j
     direction = N
+    seen = []
     for turn, d in steps:
         match turn:
             case "L":
@@ -29,8 +30,12 @@ def follow_directions(steps):
                 direction *= right_turn
             case _:
                 raise Exception(f"Illegal move: {turn}{d}")
-        pos += d * direction
-    return pos, direction
+        for i in range(d):
+            pos += direction
+            if pos in seen:
+                return pos, direction
+            seen.append(pos)
+    return None, None  # never repeated position
 
 
 def manhattan_d(coord):
