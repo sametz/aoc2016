@@ -9,25 +9,24 @@ def test_read_input():
     assert result[-1] == ("L", 1)
 
 
-@pytest.mark.parametrize("steps, expected",
-                         [
-                             ([("R", 2), ("L", 3)], (None, None)),
-                             ([
-                                  ("R", 8),
-                                  ("R", 4),
-                                  ("R", 4),
-                                  ("R", 8)
-                              ], (4 +0j, 0 - 1j))
-                         ])
+@pytest.mark.parametrize(
+    "steps, expected",
+    [
+        ([("R", 2), ("L", 3)], (None, None)),
+        ([("R", 8), ("R", 4), ("R", 4), ("R", 8)], (4 + 0j, 0 - 1j)),
+    ],
+)
 def test_follow_directions(steps, expected):
     assert follow_directions(steps) == expected
 
 
-@pytest.mark.parametrize("coord, expected", [
-    (2 - 3j, 5),
-    (0 + 2j, 2),
-    (10 - 2j, 12),
-]
-                         )
+@pytest.mark.parametrize(
+    "coord, expected",
+    [
+        (2 - 3j, 5),
+        (0 + 2j, 2),
+        (10 - 2j, 12),
+    ],
+)
 def test_manhattan_d(coord, expected):
     assert manhattan_d(coord) == expected

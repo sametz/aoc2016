@@ -167,5 +167,4 @@ main.c
 # aoc
 input.txt
 input.json
-test_input.txt
 .DS_Store

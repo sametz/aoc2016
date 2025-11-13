@@ -8,7 +8,7 @@ right_turn = 0 + 1j
 
 
 def read_input():
-    with open('input.txt') as f:
+    with open("input.txt") as f:
         steps = f.read().split(", ")
         return [(step[0], int(step[1:])) for step in steps]
 
@@ -17,6 +17,7 @@ def read_input():
 # ouf N, S, E, and W steps. I don't think counting number of N/S/E/W
 # steps is more efficient than just adding at each direction,
 # so try the obvious solution.
+
 
 def follow_directions(steps):
     pos = 0 + 0j
