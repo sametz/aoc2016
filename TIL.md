@@ -14,3 +14,8 @@ Sorting by two criteria, with one ascending and the other descending.
 `c_sorted = sorted(c, key=lambda x: (-x[1], x[0]))`
 
 - reverse sorting of `x[1]` requires it to be numeric
+
+## Day 8
+
+Numpy: filling slices; roll
+Matplotlib: pyplot `imshow` to visualize array
