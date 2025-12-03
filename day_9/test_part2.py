@@ -2,7 +2,7 @@ import re
 
 import pytest
 
-from part2 import data_regex, marker_regex, read_input
+from part2 import data_regex, marker_regex, read_input, decompress
 
 
 def test_read_input():
@@ -30,7 +30,7 @@ def test_assumptions():
     single_marker_regex = re.compile(r"^\w*\((\d+)x(\d+)\)(\w[^\(]+)")
     # t = "abcd(2x3)ef(3x4)ghijk"
     # t = "(172x1)(3x7)XPJ"
-    consumed  = False
+    consumed = False
     while not consumed:
         d = data_regex.search(t)
         if d:
@@ -55,17 +55,14 @@ def test_assumptions():
         t = text[c:]
 
 
-
-# @pytest.mark.parametrize(
-#     "s, expected",
-#     [
-#         ("ADVENT", "ADVENT"),
-#         ("A(1x5)BC", "ABBBBBC"),
-#         ("(3x3)XYZ", "XYZXYZXYZ"),
-#         ("A(2x2)BCD(2x2)EFG", "ABCBCDEFEFG"),
-#         ("(6x1)(1x3)A", "(1x3)A"),
-#         ("X(8x2)(3x3)ABCY", "X(3x3)ABC(3x3)ABCY"),
-#     ],
-# )
-# def test_decompress(s, expected):
-#     assert decompress(s) == expected
+@pytest.mark.parametrize(
+    "s, expected",
+    [
+        # ("(3x3)XYZ", 9),
+        # ("X(8x2)(3x3)ABCY", 20),
+        # ("(27x12)(20x12)(13x14)(7x10)(1x12)A", 241920),
+        ("(25x3)(3x3)ABC(2x3)XY(5x2)PQRSTX(18x9)(3x2)TWO(5x7)SEVEN", 445),
+    ],
+)
+def test_decompress(s, expected):
+    assert decompress(s) == expected

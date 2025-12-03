@@ -1,8 +1,8 @@
 import re
 
-data_regex = re.compile(r"^(\w[^\(]*)(.*)")
+data_regex = re.compile(r"^(\w[^(]*)(.*)")
 marker_regex = re.compile(r"^\((\d+)x(\d+)\)(.*)")
-single_marker_regex = re.compile(r"^\w*\((\d+)x(\d+)\)(\w[^\(]+)")
+single_marker_regex = re.compile(r"^\w*\((\d+)x(\d+)\)(\w[^(]+)")
 
 
 def read_input():
@@ -10,15 +10,18 @@ def read_input():
         return f.read().strip()
 
 
-def process_marker(c, n, remainder):
-    if "(" not in remainder:
-        return c * n, remainder[c:]
+# def process_marker(c, n, remainder):
+#     if "(" not in remainder:
+#         return c * n, remainder[c:]
 
 
 def decompress(s):
     total = 0
     completed = False
     while not completed:
+        if not s:
+            completed = True
+            continue
         d = data_regex.search(s)
         if d:
             prefix, s = d.groups()
@@ -37,10 +40,13 @@ def decompress(s):
         if not m:
             raise Exception(f"no match for {s}")
 
-        c, r, remainder = m.groups()
-        repeated = remainder[:c] * r
-        t = None
+        c_str, r_str, remainder = m.groups()
+        c = int(c_str)
+        r = int(r_str)
+        total += decompress(remainder[:c]) * r + decompress(remainder[c:])
+        completed = True
     return total
+
 
 # def decompress(s):
 #     remaining = s[:]
