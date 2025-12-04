@@ -10,8 +10,8 @@ bots = defaultdict(list)
 outputs = defaultdict(list)
 receivers = {"bot": bots, "output": outputs}
 
-TARGET_COMPARISON_TEST = {"5", "2"}
-TARGET_COMPARISON = {"61", "17"}
+TARGET_COMPARISON_TEST = {5, 2}
+TARGET_COMPARISON = {61, 17}
 
 
 def read_input(filename):
@@ -35,6 +35,7 @@ def dispatch(instruction, r, target=TARGET_COMPARISON):
         chip, bot = instruction
         if len(r["bot"][bot]) < 2:
             r["bot"][bot].append(chip)
+            print(f"bot {bot} was given chip {chip}")
             return True
         else:
             return False
@@ -44,29 +45,39 @@ def dispatch(instruction, r, target=TARGET_COMPARISON):
         return False
     if len(r[low_holder][low_n]) >= 2 or len(r[high_holder][high_n]) >= 2:
         return False
-    low_chip = min(r["bot"][compare_bot])
-    high_chip = max(r["bot"][compare_bot])
+    chips = [int(chip) for chip in r["bot"][compare_bot]]
+    low_chip = min(chips)
+    high_chip = max(chips)
     if {low_chip, high_chip} == target:
         print(f"bot {compare_bot} is comparing {low_chip} and {high_chip}")
         return compare_bot
     r[low_holder][low_n].append(low_chip)
     r[high_holder][high_n].append(high_chip)
     r["bot"][compare_bot] = list()
+    print(
+        f"{low_holder} {low_n} received {low_chip}; {high_holder} {high_n} received {high_chip}"
+    )
     return True
 
 
 def main(filename, target):
     instructions = compile_instructions(filename)
+    passes = 1
     complete = False
     while not complete:
+        print(f"{'='*10} Pass {passes} {'='*10}")
         next_instructions = []
         for instruction in instructions:
             result = dispatch(instruction, receivers, target=target)
             if isinstance(result, str):
+                print(f"stopped during pass {passes}")
+                print(f"number of instructions in pass: {len(instructions)}")
                 return result
             if not result:
+                # print(f"impossible instruction: {instruction}")
                 next_instructions.append(instruction)
         instructions = next_instructions
+        passes += 1
         if len(instructions) == 0:
             print("No more instructions")
             complete = True
