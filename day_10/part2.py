@@ -88,10 +88,15 @@ def main(filename, target):
             print("No more instructions")
             complete = True
         instructions = next_instructions
-    print(f"{receivers['output']['0']}, {receivers['output']['1']}, {receivers['output']['2']}")
+    print(
+        f"{receivers['output']['0']}, {receivers['output']['1']}, {receivers['output']['2']}"
+    )
     print(receivers)
     return part1_bot
 
+
 if __name__ == "__main__":
     main("input.txt", TARGET_COMPARISON)
-    print(f"Part 2 answer: {int(receivers['output']['0'][0]) * int(receivers['output']['1'][0]) * int(receivers['output']['2'][0])}")
+    print(
+        f"Part 2 answer: {int(receivers['output']['0'][0]) * int(receivers['output']['1'][0]) * int(receivers['output']['2'][0])}"
+    )
