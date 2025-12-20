@@ -15,6 +15,14 @@ Sorting by two criteria, with one ascending and the other descending.
 
 - reverse sorting of `x[1]` requires it to be numeric
 
+implementing rot-n using a shift table.
+```
+a = string.ascii_lowercase
+    shift = n % 26
+    rot_n_table = str.maketrans(a, a[shift:] + a[:shift])
+    return s.translate(rot_n_table)
+```
+
 ## Day 8
 
 Numpy: filling slices; roll
