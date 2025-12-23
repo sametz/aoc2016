@@ -1,6 +1,8 @@
 import pytest
 
-from part1 import occupied_floors, active_floors, next_states, move_duos, move_single_chips
+from part1 import (occupied_floors, active_floors, next_states, move_duos,
+                   move_single_chips, move_single_generators, move_two_chips,
+                   move_two_generators)
 
 
 def test_occupied_floors():
@@ -27,15 +29,6 @@ def test_move_duos():
     assert ((3, 1), (3, 3), 3) not in move_duos(state, 3)
 
 
-# def test_duo_move():
-#     state = ((2, 2), (1, 3), 2)
-#     assert ((3, 3), (1, 3), 3) in next_states(state)
-#     assert ((1, 1), (1, 3), 1) not in next_states(state)
-#     state = ((3, 1), (2, 2), 2)
-#     assert ((3, 1), (1, 1), 1) in next_states(state)
-#     assert ((3, 1), (3, 3), 3) not in next_states(state)
-
-
 def test_move_single_chips():
     state = ((2, 3), (4, 1), 2)
     assert move_single_chips(state, 3) == [((3, 3), (4, 1), 3)]
@@ -43,15 +36,38 @@ def test_move_single_chips():
     assert move_single_chips(state, 1) == []
 
 
+def test_move_single_generators():
+    state = ((3, 2), (4, 1), 2)
+    assert move_single_generators(state, 3) == [((3, 3), (4, 1), 3)]
+    state = ((1, 4), (3, 2), 2)
+    assert move_single_generators(state, 1) == []
+    assert move_single_generators(state, 3) == [((1, 4), (3, 3), 3)]
+
+
+def test_move_two_chips():
+    state = ((2, 3), (2, 3), 2)
+    assert move_two_chips(state, 3) == [((3, 3), (3, 3), 3)]
+
+
+def test_move_two_generators():
+    state = ((2, 3), (2, 3), 3)
+    assert move_two_generators(state, 2) == [((2, 2), (2, 2), 2)]
+
+
 @pytest.mark.parametrize(
     "state1, state2",
     [
-        # (((1, 2), (1, 3), 1), ((2, 2), (1, 3), 2)),
-        # (((2, 2), (1, 3), 2), ((3, 3), (1, 3), 3)),
-        # (((3, 3), (1, 3), 3), ((2, 3), (1, 3), 2)),
-        # (((2, 3), (1, 3), 2), ((1, 3), (1, 3), 1)),
-        # (((1, 3), (1, 3), 1), ((2, 3), (2, 3), 2)),
+        (((1, 2), (1, 3), 1), ((1, 3), (2, 2), 2)),
+        (((1, 3), (2, 2), 2), ((1, 3), (3, 3), 3)),
+        (((1, 3), (3, 3), 3), ((1, 3), (2, 3), 2)),
+        (((1, 3), (2, 3), 2), ((1, 3), (1, 3), 1)),
+        (((1, 3), (1, 3), 1), ((2, 3), (2, 3), 2)),
         (((2, 3), (2, 3), 2), ((3, 3), (3, 3), 3)),
+        (((3, 3), (3, 3), 3), ((4, 3), (4, 3), 4)),
+        (((4, 3), (4, 3), 4), ((3, 3), (4, 3), 3)),
+        (((3, 3), (4, 3), 3), ((3, 4), (4, 4), 4)),
+        (((3, 4), (4, 4), 4), ((3, 4), (3, 4), 3)),
+        (((3, 4), (3, 4), 3), ((4, 4), (4, 4), 4)),
     ],
 )
 def test_steps(state1, state2):

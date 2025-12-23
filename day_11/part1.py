@@ -47,8 +47,8 @@ def next_states(state):
         next_states += move_duos(state, f)
         next_states += move_single_chips(state, f)
         next_states += move_single_generators(state, f)
-        next_states += move_double_chips(state, f)
-        next_states += move_double_generators(state, f)
+        next_states += move_two_chips(state, f)
+        next_states += move_two_generators(state, f)
     return next_states
 
 
@@ -81,91 +81,63 @@ def move_single_chips(state, f):
     return next_states
 
 
-def move_single_generators(state, f): pass
-
-
-def move_double_chips(state, f): pass
-
-
-def move_double_generators(state, f): pass
-
-
-def old_next_states(state):
-    current_floor = state[-1]
-    doodads = list(state[:-1])
-    if set(doodads) == {(4, 4)}:
-        return None  # end goal achieved
-    next_floors = {current_floor - 1, current_floor + 1} & {1, 2, 3, 4}
+def move_single_generators(state, f):
+    doodads, current_floor = list(state[:-1]), state[-1]
     next_states = []
-    for f in next_floors:
-        movable_chips = []  # indices for movable chips
-        movable_generators = []  # indices for movable generators
-        for i in range(len(doodads)):
-            # safely move a pair, or move to create a pair
-            if (
-                    doodads[i] == (current_floor, current_floor)
-                    or doodads[i] == (current_floor, f)
-                    or doodads[i] == (f, current_floor)
-            ):
-                next_state = tuple(doodads[:i] + [(f, f)] + doodads[i + 1:] + [f])
-                if is_safe(next_state) and next_state not in next_states:
-                    next_states.append(next_state)
-            # other_doodads = doodads[:i] + doodads[i + 1:]
-            # other_generator_floors = [g for _, g in other_doodads]
-            # if f not in other_generator_floors:
-            #     new_doodad_state = (f, doodads[i][1])
-            #     next_state = tuple(doodads[:i] + new_doodad_state + doodads[i + 1:] + [f])
-            #     if next_state not in old_next_states:
-            #         old_next_states.append(next_state)
+    for i, doodad in enumerate(doodads):
+        if doodad[1] == current_floor:
+            next_doodads = doodads[:i] + [(doodad[0], f)] + doodads[i + 1:]
+            next_state = tuple(sorted(next_doodads) + [f])
+            if is_safe(next_state) and next_state not in next_states:
+                next_states.append(next_state)
+    return next_states
 
-            # single chip move
-            next_state = tuple(
-                doodads[:i] + [(f, doodads[i][1])] + doodads[i + 1:] + [f]
+
+def move_two_chips(state, f):
+    doodads, current_floor = list(state[:-1]), state[-1]
+    next_states = []
+    movable_chip_locs = []
+    for i, doodad in enumerate(doodads):
+        if doodad[0] == current_floor:
+            movable_chip_locs.append(i)
+    if len(movable_chip_locs) > 1:
+        for i1, i2 in combinations(movable_chip_locs, 2):
+            new_doodad_1 = (f, doodads[i1][1])
+            new_doodad_2 = (f, doodads[i2][1])
+            next_doodads = (
+                    doodads[:i1]
+                    + [new_doodad_1]
+                    + doodads[i1 + 1: i2]
+                    + [new_doodad_2]
+                    + doodads[i2 + 1:]
             )
-            if (
-                    doodads[i][0] == current_floor
-                    and is_safe(next_state)
-                    and next_state not in next_states
-            ):
+            next_state = tuple(sorted(next_doodads) + [f])
+            if is_safe(next_state) and next_state not in next_states:
                 next_states.append(next_state)
-                movable_chips.append(i)
-            # single generator move
-            next_state = tuple(doodads[:i] + [(doodads[0], f)] + doodads[i + 1:] + [f])
-            if (
-                    doodads[i][1] == current_floor
-                    and is_safe(next_state)
-                    and next_state not in next_states
-            ):
+    return next_states
+
+
+def move_two_generators(state, f):
+    doodads, current_floor = list(state[:-1]), state[-1]
+    next_states = []
+    movable_generator_locs = []
+    for i, doodad in enumerate(doodads):
+        if doodad[1] == current_floor:
+            movable_generator_locs.append(i)
+    if len(movable_generator_locs) > 1:
+        for i1, i2 in combinations(movable_generator_locs, 2):
+            new_doodad_1 = (doodads[i1][0], f)
+            new_doodad_2 = (doodads[i2][0], f)
+            next_doodads = (
+                    doodads[:i1]
+                    + [new_doodad_1]
+                    + doodads[i1 + 1: i2]
+                    + [new_doodad_2]
+                    + doodads[i2 + 1:]
+            )
+            next_state = tuple(sorted(next_doodads) + [f])
+            if is_safe(next_state) and next_state not in next_states:
                 next_states.append(next_state)
-                movable_generators.append(i)
-            # double chip move
-            if len(movable_chips) > 1:
-                pairs = combinations(movable_chips, 2)
-                for i1, i2 in pairs:
-                    new_state = tuple(
-                        doodads[:i1]
-                        + [(f, doodads[i1][1])]
-                        + doodads[i1 + 1: i2]
-                        + [(f, doodads[i2][1])]
-                        + doodads[i2 + 1:]
-                        + [f]
-                    )
-                    if is_safe(new_state) and new_state not in next_states:
-                        next_states.append(new_state)
-            # double generator move
-            if len(movable_generators) > 1:
-                pairs = combinations(movable_generators, 2)
-                for i1, i2 in pairs:
-                    new_state = tuple(
-                        doodads[:i1]
-                        + [(doodads[i1][0], f)]
-                        + doodads[i1 + 1: i2]
-                        + [(doodads[i2][0], f)]
-                        + doodads[i2 + 1:]
-                        + [f]
-                    )
-                    if is_safe(new_state) and new_state not in next_states:
-                        next_states.append(new_state)
     return next_states
 
 
