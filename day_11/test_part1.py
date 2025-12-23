@@ -1,6 +1,16 @@
 import pytest
 
-from part1 import next_states
+from part1 import occupied_floors, active_floors, next_states, move_duos, move_single_chips
+
+
+def test_occupied_floors():
+    state = ((2, 3), (3, 4), 1)
+    assert occupied_floors(state) == {2, 3, 4}
+
+
+def test_remaining_floors():
+    state = ((2, 3), (3, 4), 2)
+    assert active_floors(state) == {2, 3, 4}
 
 
 def test_final_state():
@@ -8,13 +18,29 @@ def test_final_state():
     assert next_states(state) is None
 
 
-def test_duo_move():
-    state = ((2, 2), (1, 3), 2)
-    assert ((3, 3), (1, 3), 3) in next_states(state)
-    assert ((1, 1), (1, 3), 1) not in next_states(state)
-    state = ((3, 1), (2, 2), 2)
-    assert ((3, 1), (1, 1), 1) in next_states(state)
-    assert ((3, 1), (3, 3), 3) not in next_states(state)
+def test_move_duos():
+    state = ((1, 3), (2, 2), 2)
+    assert ((1, 3), (3, 3), 3) in move_duos(state, 3)
+    assert ((1, 1), (1, 3), 1) not in move_duos(state, 1)
+    state = ((2, 2), (3, 1), 2)
+    assert ((1, 1), (3, 1), 1) in move_duos(state, 1)
+    assert ((3, 1), (3, 3), 3) not in move_duos(state, 3)
+
+
+# def test_duo_move():
+#     state = ((2, 2), (1, 3), 2)
+#     assert ((3, 3), (1, 3), 3) in next_states(state)
+#     assert ((1, 1), (1, 3), 1) not in next_states(state)
+#     state = ((3, 1), (2, 2), 2)
+#     assert ((3, 1), (1, 1), 1) in next_states(state)
+#     assert ((3, 1), (3, 3), 3) not in next_states(state)
+
+
+def test_move_single_chips():
+    state = ((2, 3), (4, 1), 2)
+    assert move_single_chips(state, 3) == [((3, 3), (4, 1), 3)]
+    state = ((2, 3), (4, 1), 2)
+    assert move_single_chips(state, 1) == []
 
 
 @pytest.mark.parametrize(
