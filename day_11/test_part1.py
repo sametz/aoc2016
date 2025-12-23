@@ -2,7 +2,8 @@ import pytest
 
 from part1 import (occupied_floors, active_floors, next_states, move_duos,
                    move_single_chips, move_single_generators, move_two_chips,
-                   move_two_generators)
+                   move_two_generators, INITIAL_TEST_STATE, FINAL_TEST_STATE,
+                   main)
 
 
 def test_occupied_floors():
@@ -72,3 +73,7 @@ def test_move_two_generators():
 )
 def test_steps(state1, state2):
     assert state2 in next_states(state1)
+
+
+def test_main():
+    assert main(INITIAL_TEST_STATE, FINAL_TEST_STATE) == 11

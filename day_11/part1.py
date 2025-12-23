@@ -10,9 +10,30 @@ INITIAL_TEST_STATE = (
     (1, 3),  # lithium
     1,  # current floor
 )
-moves = 0
-move_dict = {INITIAL_TEST_STATE: moves}
-frontier = Queue()
+
+INITIAL_STATE = (
+    (1, 1),
+    (2, 1),
+    (2, 1),
+    (3, 3),
+    (3, 3),
+    1
+)
+
+FINAL_TEST_STATE = (
+    (4, 4),
+    (4, 4),
+    4
+)
+
+FINAL_STATE = (
+    (4, 4),
+    (4, 4),
+    (4, 4),
+    (4, 4),
+    (4, 4),
+    4
+)
 
 
 def occupied_floors(state):
@@ -152,3 +173,26 @@ def is_safe(state):
 
 def generator_floors(doodads):
     return [f for _, f in doodads]
+
+
+def main(initial_state, final_state):
+    moves = 0
+    move_dict = {initial_state: moves}
+    frontier = Queue()
+    frontier.put(initial_state)
+
+    while not frontier.empty():
+        state = frontier.get()
+        moves = move_dict[state]
+        ns = next_states(state)
+        if not ns:
+            continue
+        for next_state in ns:
+            if next_state not in move_dict or move_dict[next_state] > moves + 1:
+                move_dict[next_state] = moves + 1
+                frontier.put(next_state)
+    return move_dict[final_state]
+
+
+if __name__ == "__main__":
+    print(f"Number of steps needed: {main(INITIAL_STATE, FINAL_STATE)}")
