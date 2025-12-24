@@ -13,7 +13,7 @@ def read_input(filename):
 
 def main(filename):
     assembly = read_input(filename)
-    registers = {"a": 0, "b": 0, "c": 1, "d": 0}
+    registers = {"a": 0, "b": 0, "c": 0, "d": 0}
     i = 0
     i_max = len(assembly)
     while i < i_max:
