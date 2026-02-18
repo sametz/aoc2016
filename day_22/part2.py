@@ -67,6 +67,7 @@ def empty_coord(nodes):
     assert len(empty_nodes) == 1
     return empty_nodes[0][0]
 
+
 # inspecting grid: horizontal wall starts at (14, 7) and extends to right
 # shuffle empty node to x = 13, then shuffle it to top row (y = 0)
 # then shuffle until just left of top right corner
@@ -93,4 +94,3 @@ if __name__ == "__main__":
     x_max, y_max = grid_dimensions(nodes)
     print_grid(grid, x_max, y_max)
     print(f"Answer by cheating: {cheat(nodes, x_max, y_max)}")
-# 194 is too low
